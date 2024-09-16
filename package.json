@@ -1,0 +1,38 @@
+{
+	"name": "example-with-tailwindcss",
+	"type": "module",
+	"scripts": {
+		"build": "vinxi build",
+		"dev": "vinxi dev",
+		"start": "vinxi start"
+	},
+	"dependencies": {
+		"@aws-sdk/client-s3": "^3.600.0",
+		"@kobalte/core": "^0.13.6",
+		"@solid-primitives/pagination": "^0.3.0",
+		"@solidjs/router": "^0.14.3",
+		"@solidjs/start": "^1.0.6",
+		"autoprefixer": "^10.4.19",
+		"class-variance-authority": "^0.7.0",
+		"clsx": "^2.1.1",
+		"lucide-solid": "^0.439.0",
+		"postcss": "^8.4.38",
+		"solid-js": "^1.8.18",
+		"sst": "3.1.10",
+		"tailwind-merge": "^2.5.2",
+		"tailwindcss": "^3.4.3",
+		"tailwindcss-animate": "^1.0.7",
+		"uuid": "^10.0.0",
+		"vinxi": "^0.4.1"
+	},
+	"engines": {
+		"node": ">=18"
+	},
+	"overrides": {
+		"nitropack": "npm:nitropack-nightly@latest"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.1",
+		"@types/uuid": "^10.0.0"
+	}
+}
