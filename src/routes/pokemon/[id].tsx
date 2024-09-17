@@ -1,12 +1,15 @@
+import ImageWithFallback from "@/components/ImageWithFallback";
 import PokemonBadge from "@/components/PokemonBadge";
 import PokemonEvolutions from "@/components/PokemonEvolutions";
+import PokemonSoundButton from "@/components/PokemonSoundButton";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getPokemonWithEvolution } from "@/libs/api";
 import { getPokemonIconAndColor } from "@/libs/pokemonUtils";
-import { useParams } from "@solidjs/router";
-import { createResource } from "solid-js";
+import { createAsync, useParams } from "@solidjs/router";
+import { Show } from "solid-js";
 
 export const route = {
 	load: ({ params }: any) => getPokemonWithEvolution(params.id),
@@ -14,7 +17,7 @@ export const route = {
 
 export default function Page() {
 	const params = useParams();
-	const [pokemon] = createResource(() => getPokemonWithEvolution(params.id));
+	const pokemon = createAsync(() => getPokemonWithEvolution(params.id));
 
 	return (
 		<div class="w-full max-w-5xl mx-auto">
@@ -25,33 +28,16 @@ export default function Page() {
 					class={`flex flex-col items-center pb-2 rounded-b-full rounded-t-xl pokemon-image-container ${pokemon()?.pokemon.types[0]?.type.name === "normal" ? "bg-gray-300" : `${getPokemonIconAndColor(pokemon()?.pokemon.types[0]?.type.name || "normal").color}`}`}
 				>
 					{pokemon() && (
-						<div class={"relative w-[400px] h-[400px] overflow-hidden mb-4"}>
-							<img
-								src={pokemon()?.pokemon.sprites.front_default}
-								alt={pokemon()?.pokemon.name}
-								class="w-full h-full object-contain relative z-20"
-								onload={(e) => {
-									const img = e.target as HTMLImageElement;
-									const pokemonName = pokemon()?.pokemon.name.toLowerCase();
-									const gifUrl = `https://img.pokemondb.net/sprites/black-white/anim/normal/${pokemonName}.gif`;
-
-									fetch(gifUrl, { method: "HEAD" })
-										.then((res) => {
-											console.log("Respuesta de fetch:", res.status, res.ok);
-											if (res.ok) {
-												console.log("GIF encontrado, cambiando imagen");
-												img.src = gifUrl;
-											} else {
-												console.log(
-													"GIF no encontrado, manteniendo imagen original",
-												);
-											}
-										})
-										.catch((error) => {
-											console.error("Error al verificar el GIF:", error);
-										});
-								}}
-							/>
+						<div class={"relative w-[400px] h-[400px] overflow-hidden mb-4 flex items-center justify-center"}>
+							<Show when={pokemon()?.pokemon.id} fallback={<Skeleton class="h-full w-full" />}>
+								<ImageWithFallback
+									key={pokemon()?.pokemon.id}
+									fallbackSrc={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon()?.pokemon.id}.png`}
+									src={`https://img.pokemondb.net/sprites/black-white/anim/normal/${pokemon()?.pokemon.name}.gif`}
+									alt={`${pokemon()?.pokemon.name} sprite`}
+									class="w-1/2 object-contain z-50 relative"
+								/>
+							</Show>
 							<div class="absolute w-full h-full inset-0 flex items-center justify-center opacity-30 z-10">
 								<img
 									src={
@@ -66,6 +52,9 @@ export default function Page() {
 						</div>
 					)}
 					<h2 class="text-4xl font-bold">{pokemon()?.pokemon.name}</h2>
+					<Show when={pokemon()?.pokemon.cries?.latest}>
+						<PokemonSoundButton url={pokemon()?.pokemon.cries.latest!} />
+					</Show>
 					<p class="text-sm text-gray-500">N°{pokemon()?.pokemon.id}</p>
 				</CardHeader>
 				<CardContent class="pt-6 space-y-8">
@@ -108,8 +97,9 @@ export default function Page() {
 						{pokemon()?.pokemon.stats?.map((stat) => (
 							<div class="mb-4">
 								<div class="flex justify-between mb-1">
-									<span class="text-sm font-semibold text-gray-700 capitalize">
+									<span class="text-sm font-semibold text-gray-700 capitalize flex items-center gap-2">
 										{stat.stat.name}
+										
 									</span>
 									<span class="text-sm font-semibold text-gray-700">
 										{stat.base_stat}

@@ -10,7 +10,7 @@ const PokemonDetails = ({ pokemon }: { pokemon: Evolution }) => {
 		<A href={`/pokemon/${pokemon.number}`} end class="block">
 			<div class="space-y-4">
 				<div
-					class={`flex items-center ${getPokemonIconAndColor(pokemon.types[0]).color} p-4 rounded-lg`}
+					class={`flex items-center ${getPokemonIconAndColor(pokemon.types[0]).secondaryColor} p-4 rounded-lg border-4 border-black`}
 				>
 					<div class="relative w-20 h-20 mr-4 rounded-md flex items-center justify-center overflow-hidden">
 						<img
@@ -53,20 +53,22 @@ const PokemonDetails = ({ pokemon }: { pokemon: Evolution }) => {
 
 const PokemonEvolutions = ({
 	evolutionChain,
-}: { evolutionChain: Evolution[] }) => {
+}: { evolutionChain: Record<number, Evolution[]> }) => {
 	return (
 		<section>
 			<h3 class="text-xl font-semibold mb-4">Cadena de Evolución</h3>
 			<div class="space-y-8">
 				<Show when={evolutionChain}>
-					{evolutionChain.map((evolution: Evolution, index: number) => (
-						<div>
-							{index > 0 && (
+					{Object.entries(evolutionChain).map(([level, evolutions]) => (
+						<div class="flex flex-col gap-4">
+							{level !== "0" && (
 								<div class="w-full py-2 flex items-center justify-center text-blue-500 font-bold text-xl">
-									<ChevronDown class="w-10 h-10" /> Level {evolution.level}
+									<ChevronDown class="w-10 h-10" /> Level {level}
 								</div>
 							)}
-							<PokemonDetails pokemon={evolution} />
+							{evolutions.map((evolution) => (
+								<PokemonDetails pokemon={evolution} />
+							))}
 						</div>
 					))}
 				</Show>

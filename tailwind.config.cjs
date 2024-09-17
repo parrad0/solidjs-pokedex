@@ -22,6 +22,7 @@ module.exports = {
 		"bg-red-100",
 		"bg-blue-100",
 		"bg-purple-100",
+		"bg-red-600",
 	],
 	theme: {
 		container: {

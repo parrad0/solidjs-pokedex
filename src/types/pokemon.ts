@@ -32,7 +32,7 @@ export type PokemonDetails = {
 		};
 	}[];
 	height: number;
-	held_items: any[]; // Puedes definir un tipo más específico si es necesario
+	held_items: any[];
 	is_default: boolean;
 	location_area_encounters: string;
 	moves: {
@@ -57,7 +57,6 @@ export type PokemonDetails = {
 		back_shiny: string;
 		front_default: string;
 		front_shiny: string;
-		// ... otros sprites si es necesario
 	};
 	stats: {
 		base_stat: number;

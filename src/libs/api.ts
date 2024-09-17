@@ -4,123 +4,134 @@ import type {
 	PokemonType,
 } from "@/types/pokemon";
 import type { Evolution } from "@/types/pokemon";
+import { cache } from "@solidjs/router";
 
-export const fetchPokemons = async (
-	page: number,
-	type: string,
-): Promise<PokemonListItem[]> => {
-	"use server";
-	const url = type
-		? `https://pokeapi.co/api/v2/type/${type}?limit=12&offset=${page * 12}`
-		: `https://pokeapi.co/api/v2/pokemon?limit=12&offset=${page * 12}`;
+export const fetchPokemons = cache(
+	async (page: number, type: string): Promise<PokemonListItem[]> => {
+		"use server";
+		const url = type
+			? `https://pokeapi.co/api/v2/type/${type}?limit=12&offset=${page * 12}`
+			: `https://pokeapi.co/api/v2/pokemon?limit=12&offset=${page * 12}`;
 
-	const response = await fetch(url);
-	const data = await response.json();
+		const response = await fetch(url);
+		const data = await response.json();
 
-	if (type) {
-		return data.pokemon.map((p: any) => p.pokemon);
-	}
-	return data.results;
-};
+		if (type) {
+			return data.pokemon.map((p: any) => p.pokemon);
+		}
+		return data.results;
+	}, "pokemons");
 
-export const fetchPokemonTypes = async (): Promise<PokemonType[]> => {
+export const fetchPokemonTypes = cache(async (): Promise<PokemonType[]> => {
 	const response = await fetch("https://pokeapi.co/api/v2/type");
 	const data = await response.json();
 	return data.results;
-};
+}, "types");
 
-export const fetchPokemonDetails = async (
-	url: string,
-): Promise<PokemonDetails | null> => {
-	try {
-		const response = await fetch(url);
-		if (!response.ok) {
-			throw new Error(`Error al obtener detalles del Pokémon desde ${url}`);
+export const fetchPokemonDetails = cache(
+	async (url: string): Promise<PokemonDetails | null> => {
+		try {
+			const response = await fetch(url);
+			if (!response.ok) {
+				throw new Error(`Error fetching pokemon details from ${url}`);
+			}
+			const data = await response.json();
+			return data;
+		} catch (error) {
+			console.error("Error in fetchPokemonDetails:", error);
+			return null;
 		}
-		const data = await response.json();
-		return data;
-	} catch (error) {
-		console.error("Error en fetchPokemonDetails:", error);
-		return null;
-	}
-};
+	}, "pokemon");
 
-export async function getPokemonWithEvolution(
-	id: string | number,
-): Promise<{ pokemon: PokemonDetails; evolutionChain: Evolution[] } | null> {
-	"use server";
-	try {
-		const pokemonResponse = await fetch(
-			`https://pokeapi.co/api/v2/pokemon/${id}`,
-		);
-		if (!pokemonResponse.ok) {
-			throw new Error(`Error al obtener el Pokémon con ID ${id}`);
-		}
-		const pokemonData: PokemonDetails = await pokemonResponse.json();
-
-		const speciesResponse = await fetch(pokemonData.species.url);
-		if (!speciesResponse.ok) {
-			throw new Error(
-				`Error al obtener los datos de la especie para el Pokémon con ID ${id}`,
+export const getPokemonWithEvolution = cache(
+	async (
+		id: string | number
+	): Promise<{ pokemon: PokemonDetails; evolutionChain: Record<number, Evolution[]> } | null> => {
+		"use server";
+		try {
+			const pokemonResponse = await fetch(
+				`https://pokeapi.co/api/v2/pokemon/${id}`
 			);
-		}
-		const speciesData = await speciesResponse.json();
+			if (!pokemonResponse.ok) {
+				throw new Error(`Error fetching pokemon with ID ${id}`);
+			}
+			const pokemonData: PokemonDetails = await pokemonResponse.json();
 
-		const evolutionResponse = await fetch(speciesData.evolution_chain.url);
-		if (!evolutionResponse.ok) {
-			throw new Error(
-				`Error al obtener la cadena de evolución para el Pokémon con ID ${id}`,
-			);
-		}
-		const evolutionData = await evolutionResponse.json();
-
-		const getAllEvolutions = async (
-			chain: any,
-			level = 0,
-		): Promise<Evolution[]> => {
-			const pokemonName = chain.species.name;
-			const pokemonUrl = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
-			const pokemonDetails = await fetchPokemonDetails(pokemonUrl);
-
-			if (!pokemonDetails) {
+			const speciesResponse = await fetch(pokemonData.species.url);
+			if (!speciesResponse.ok) {
 				throw new Error(
-					`No se pudieron obtener los detalles para ${pokemonName}`,
+					`Error fetching species for pokemon with ID ${id}`
 				);
 			}
+			const speciesData = await speciesResponse.json();
 
-			const types = Array.isArray(pokemonDetails.types)
-				? pokemonDetails.types.map((typeInfo: any) => typeInfo.type.name)
-				: [];
+			const evolutionResponse = await fetch(speciesData.evolution_chain.url);
+			if (!evolutionResponse.ok) {
+				throw new Error(
+					`Error fetching evolution chain for pokemon with ID ${id}`
+				);
+			}
+			const evolutionData = await evolutionResponse.json();
 
-			const evolution: Evolution = {
-				name: pokemonName,
-				number: pokemonDetails.id.toString(),
-				types: types,
-				level: level,
-				image: pokemonDetails.sprites.front_default,
+			const getAllEvolutions = async (
+				chain: any,
+				level = 0
+			): Promise<Evolution[]> => {
+				const pokemonName = chain.species.name;
+				const pokemonUrl = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
+				const pokemonDetails = await fetchPokemonDetails(pokemonUrl);
+
+				if (!pokemonDetails) {
+					throw new Error(
+						`Error fetching pokemon details for ${pokemonName}`
+					);
+				}
+
+				const types = Array.isArray(pokemonDetails.types)
+					? pokemonDetails.types.map((typeInfo: any) => typeInfo.type.name)
+					: [];
+
+				const evolution: Evolution = {
+					name: pokemonName,
+					number: pokemonDetails.id.toString(),
+					types: types,
+					level: level,
+					image: pokemonDetails.sprites.front_default,
+				};
+
+				let evolutions: Evolution[] = [evolution];
+
+				if (chain.evolves_to && chain.evolves_to.length > 0) {
+					for (const evo of chain.evolves_to) {
+						const evoDetails = evo.evolution_details[0];
+						const evoLevel = evoDetails ? evoDetails.min_level || 1 : 1;
+						const childEvolutions = await getAllEvolutions(evo, evoLevel);
+						evolutions = evolutions.concat(childEvolutions);
+					}
+				}
+				return evolutions;
 			};
 
-			let evolutions: Evolution[] = [evolution];
+			const evolutionChainArray = await getAllEvolutions(evolutionData.chain);
 
-			if (chain.evolves_to && chain.evolves_to.length > 0) {
-				for (const evo of chain.evolves_to) {
-					const evoDetails = evo.evolution_details[0];
-					const evoLevel = evoDetails ? evoDetails.min_level || 1 : 1;
-					const childEvolutions = await getAllEvolutions(evo, evoLevel);
-					evolutions = evolutions.concat(childEvolutions);
+			const evolutionChainStructured: Record<number, Evolution[]> = {};
+
+			evolutionChainArray.forEach((evolution) => {
+				const nivel = evolution.level;
+				if (!evolutionChainStructured[nivel]) {
+					evolutionChainStructured[nivel] = [];
 				}
-			}
-			return evolutions;
-		};
+				evolutionChainStructured[nivel].push(evolution);
+			});
 
-		const evolutionChain = await getAllEvolutions(evolutionData.chain);
-
-		return {
-			pokemon: pokemonData,
-			evolutionChain: evolutionChain,
-		};
-	} catch (error) {
-		console.error("Error en getPokemonWithEvolution:", error);
-		return null;
-	}
-}
+			const response = {
+				pokemon: pokemonData,
+				evolutionChain: evolutionChainStructured,
+			};
+			return response;
+		} catch (error) {
+			console.error("Error in getPokemonWithEvolution:", error);
+			return null;
+		}
+	},
+	"evolution");

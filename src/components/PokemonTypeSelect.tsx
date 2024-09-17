@@ -29,7 +29,6 @@ export default function PokemonTypeSelect({
 				<SelectItem item={props.item}>{props.item.rawValue}</SelectItem>
 			)}
 			onChange={(value: any) => {
-				console.log("value", value);
 				setSelectedType(value);
 			}}
 		>

@@ -4,7 +4,6 @@ import { cache } from "@solidjs/router";
 import { Suspense, createSignal } from "solid-js";
 
 const getPokemon = cache(async (e: any) => {
-	console.log("invoking", e);
 	return fetch(`https://pokeapi.co/api/v2/pokemon/${e.params.id}`).then((res) =>
 		res.json(),
 	);

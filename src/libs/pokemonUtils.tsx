@@ -37,7 +37,7 @@ export const getPokemonIconAndColor = (
 		case "fire":
 			return {
 				icon: "/Fire.png",
-				color: "bg-red-300",
+				color: "bg-red-600",
 				secondaryColor: "bg-red-100",
 			};
 		case "flying":

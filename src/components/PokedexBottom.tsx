@@ -1,4 +1,4 @@
-import { ChevronUp } from "lucide-solid";
+import { ChevronUp, GithubIcon } from "lucide-solid";
 
 export default function PokedexBottom() {
 	const scrollToTop = () => {
@@ -23,8 +23,9 @@ export default function PokedexBottom() {
 					<ChevronUp class="w-4 h-4 text-gray-500" />
 				</div>
 				<div class="flex space-x-2">
-					<div class="w-8 h-8 bg-blue-500 rounded-full" />
-					<div class="w-8 h-8 bg-green-500 rounded-full" />
+					<div class="w-8 h-8 bg-black rounded-full flex items-center justify-center" onClick={() => window.open("https://github.com/parrad0/solidjs-pokedex", "_blank")}>
+						<GithubIcon class="w-4 h-4 text-white" />
+					</div>
 				</div>
 			</div>
 		</div>
