@@ -1,20 +1,20 @@
+import { MetaProvider, Title } from "@solidjs/meta";
 import { Router } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
 import { Suspense } from "solid-js";
 import "./app.css";
 
 export default function App() {
-	return (
-		<Router
-			root={(props) => (
-				<>
-					<Suspense fallback={<div class="news-list-nav">Loading...</div>}>
-						{props.children}
-					</Suspense>
-				</>
-			)}
-		>
-			<FileRoutes />
-		</Router>
-	);
+  return (
+    <Router
+      root={props => (
+        <MetaProvider>
+          <Title>SolidStart Pokedex</Title>
+          <Suspense>{props.children}</Suspense>
+        </MetaProvider>
+      )}
+    >
+      <FileRoutes />
+    </Router>
+  );
 }

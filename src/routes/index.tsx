@@ -1,31 +1,23 @@
 import Pokedex from "@/components/Pokedex";
-import { PokemonContext } from "@/context/PokemonContext";
-import { cache } from "@solidjs/router";
-import { Suspense, createSignal } from "solid-js";
+import { Meta } from "@solidjs/meta";
+import { Suspense } from "solid-js";
 
-const getPokemon = cache(async (e: any) => {
-	return fetch(`https://pokeapi.co/api/v2/pokemon/${e.params.id}`).then((res) =>
-		res.json(),
-	);
-}, "pokemon");
-
-export const route = {
-	load: (e: any) => getPokemon(e),
-};
 
 export default function Home() {
-	const [selectedType, setSelectedType] = createSignal("");
-	const [sortOrder, setSortOrder] = createSignal("id");
-
 	return (
-		<main class="overflow-hidden">
-			<Suspense fallback={<div>Loading...</div>}>
-				<PokemonContext.Provider
-					value={{ selectedType, setSelectedType, sortOrder, setSortOrder }}
-				>
+		<div>
+			<Meta property="og:image:height" content="600" />
+			<Meta property="og:image:width" content="1200" />
+			<Meta property="og:image:alt" content="Pokedex" />
+			<Meta property="og:description" content="Explore the SolidStart Pokedex, where you can find information about your favorite Pokémon." />
+			<Meta property="og:image:type" content="image/png" />
+			<Meta property="og:image:url" content="https://solidjs-pokedex.vercel.app/og.png" />
+			<Meta property="og:site_name" content="Pokedex" />
+			<main class="overflow-hidden">
+				<Suspense fallback={<div>Loading...</div>}>
 					<Pokedex />
-				</PokemonContext.Provider>
-			</Suspense>
-		</main>
+				</Suspense>
+			</main>
+		</div>
 	);
 }
