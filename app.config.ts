@@ -11,8 +11,5 @@ export default defineConfig({
 				"@": resolve(__dirname, "./src"),
 			},
 		},
-	},
-	server: {
-		preset: "aws-lambda-streaming",
-	},
+	}
 });

@@ -22,10 +22,11 @@ export const fetchPokemons = cache(
 		return data.results;
 	}, "pokemons");
 
-export const fetchPokemonTypes = cache(async (): Promise<PokemonType[]> => {
+export const fetchPokemonTypes = cache(async () => {
+	"use server";
 	const response = await fetch("https://pokeapi.co/api/v2/type");
 	const data = await response.json();
-	return data.results;
+	return data.results as PokemonType[];
 }, "types");
 
 export const fetchPokemonDetails = cache(
@@ -46,7 +47,7 @@ export const fetchPokemonDetails = cache(
 export const getPokemonWithEvolution = cache(
 	async (
 		id: string | number
-	): Promise<{ pokemon: PokemonDetails; evolutionChain: Record<number, Evolution[]> } | null> => {
+	): Promise<PokemonDetails & { evolutionChain: Record<number, Evolution[]> } | null> => {
 		"use server";
 		try {
 			const pokemonResponse = await fetch(
@@ -125,7 +126,7 @@ export const getPokemonWithEvolution = cache(
 			});
 
 			const response = {
-				pokemon: pokemonData,
+				...pokemonData,
 				evolutionChain: evolutionChainStructured,
 			};
 			return response;

@@ -1,14 +1,15 @@
 import { fetchPokemons, fetchPokemonTypes } from "@/libs/api";
-import { PokemonListItem } from "@/types/pokemon";
+import { PokemonListItem, PokemonType } from "@/types/pokemon";
 import { createInfiniteScroll } from "@solid-primitives/pagination";
 import { Accessor, createResource, createSignal, For, Show } from "solid-js";
 import PokedexBottom from "./PokedexBottom";
 import PokemonCard, { SkeletonCard } from "./PokemonCard";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { createAsync } from "@solidjs/router";
 
 
 export default function Pokedex() {
-  const [types] = createResource(fetchPokemonTypes);
+  const types = createAsync(() => fetchPokemonTypes());
   const [selectedType, setSelectedType] = createSignal("");
   const [pages, setEl, { end, setPage, setEnd, setPages }] = createInfiniteScroll((page) => fetchPokemons(page, selectedType()));
 

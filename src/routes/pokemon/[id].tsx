@@ -22,19 +22,19 @@ export default function Page() {
 	return (
 		<div class="w-full max-w-5xl mx-auto">
 			<Card
-				class={`${getPokemonIconAndColor(pokemon()?.pokemon.types[0]?.type.name || "normal").secondaryColor} overflow-hidden w-full`}
+				class={`${getPokemonIconAndColor(pokemon()?.types[0]?.type.name || "normal").secondaryColor} overflow-hidden w-full`}
 			>
 				<CardHeader
-					class={`flex flex-col items-center pb-2 rounded-b-full rounded-t-xl pokemon-image-container ${pokemon()?.pokemon.types[0]?.type.name === "normal" ? "bg-gray-300" : `${getPokemonIconAndColor(pokemon()?.pokemon.types[0]?.type.name || "normal").color}`}`}
+					class={`flex flex-col items-center pb-2 rounded-b-full rounded-t-xl pokemon-image-container ${pokemon()?.types[0]?.type.name === "normal" ? "bg-gray-300" : `${getPokemonIconAndColor(pokemon()?.types[0]?.type.name || "normal").color}`}`}
 				>
 					{pokemon() && (
 						<div class={"relative w-[400px] h-[400px] overflow-hidden mb-4 flex items-center justify-center"}>
-							<Show when={pokemon()?.pokemon.id} fallback={<Skeleton class="h-full w-full" />}>
+							<Show when={pokemon()?.id} fallback={<Skeleton class="h-full w-full" />}>
 								<ImageWithFallback
-									key={pokemon()?.pokemon.id}
-									fallbackSrc={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon()?.pokemon.id}.png`}
-									src={`https://img.pokemondb.net/sprites/black-white/anim/normal/${pokemon()?.pokemon.name}.gif`}
-									alt={`${pokemon()?.pokemon.name} sprite`}
+									key={pokemon()?.id}
+									fallbackSrc={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon()?.id}.png`}
+									src={`https://img.pokemondb.net/sprites/black-white/anim/normal/${pokemon()?.name}.gif`}
+									alt={`${pokemon()?.name} sprite`}
 									class="w-1/2 object-contain z-50 relative"
 								/>
 							</Show>
@@ -42,20 +42,20 @@ export default function Page() {
 								<img
 									src={
 										getPokemonIconAndColor(
-											pokemon()?.pokemon.types[0]?.type.name || "normal",
+											pokemon()?.types[0]?.type.name || "normal",
 											{ class: "w-full h-full" },
 										).icon
 									}
-									alt={pokemon()?.pokemon.types[0]?.type.name || "normal"}
+									alt={pokemon()?.types[0]?.type.name || "normal"}
 								/>
 							</div>
 						</div>
 					)}
-					<h2 class="text-4xl font-bold">{pokemon()?.pokemon.name}</h2>
-					<Show when={pokemon()?.pokemon.cries?.latest}>
-						<PokemonSoundButton url={pokemon()?.pokemon.cries.latest!} />
+					<h2 class="text-4xl font-bold">{pokemon()?.name}</h2>
+					<Show when={pokemon()?.cries?.latest}>
+						<PokemonSoundButton pokemon={pokemon} />
 					</Show>
-					<p class="text-sm text-gray-500">N°{pokemon()?.pokemon.id}</p>
+					<p class="text-sm text-gray-500">N°{pokemon()?.id}</p>
 				</CardHeader>
 				<CardContent class="pt-6 space-y-8">
 					<section>
@@ -64,7 +64,7 @@ export default function Page() {
 							<div>
 								<h4 class="text-sm font-semibold text-gray-500">Type</h4>
 								<div class="flex space-x-2 mt-1">
-									{pokemon()?.pokemon.types.map((type) => (
+									{pokemon()?.types.map((type) => (
 										<PokemonBadge type={type.type.name} />
 									))}
 								</div>
@@ -72,7 +72,7 @@ export default function Page() {
 							<div>
 								<h4 class="text-sm font-semibold text-gray-500">Abilities</h4>
 								<div class="flex space-x-2 mt-1">
-									{pokemon()?.pokemon.abilities.map((a) => (
+									{pokemon()?.abilities.map((a) => (
 										<Badge class="capitalize">{a.ability.name}</Badge>
 									))}
 								</div>
@@ -80,13 +80,13 @@ export default function Page() {
 							<div>
 								<h4 class="text-sm font-semibold text-gray-500">Height</h4>
 								<p class="text-md font-bold text-black">
-									{(pokemon()?.pokemon.height ?? 0 / 10).toFixed(1)} m
+									{(pokemon()?.height ?? 0 / 10).toFixed(1)} m
 								</p>
 							</div>
 							<div>
 								<h4 class="text-sm font-semibold text-gray-500">Weight</h4>
 								<p class="text-md font-bold text-black">
-									{(pokemon()?.pokemon.weight ?? 0 / 10).toFixed(1)} kg
+									{(pokemon()?.weight ?? 0 / 10).toFixed(1)} kg
 								</p>
 							</div>
 						</div>
@@ -94,7 +94,7 @@ export default function Page() {
 
 					<section>
 						<h3 class="text-xl font-semibold mb-4">Base Stats</h3>
-						{pokemon()?.pokemon.stats?.map((stat) => (
+						{pokemon()?.stats?.map((stat) => (
 							<div class="mb-4">
 								<div class="flex justify-between mb-1">
 									<span class="text-sm font-semibold text-gray-700 capitalize flex items-center gap-2">

@@ -42,7 +42,7 @@ export default function PokemonCard({ pokemonUrl }: { pokemonUrl: string }) {
 						<div class="text-gray-400 text-sm mb-1 flex items-center justify-start gap-4">
 							<p>N°{pokemon()?.id?.toString().padStart(3, "0")}</p>
 							<Show when={pokemon()?.cries?.latest}>
-								<PokemonSoundButton url={pokemon()?.cries.latest ?? ""} />
+								<PokemonSoundButton pokemon={pokemon} />
 							</Show>
 						</div>
 						<div class="text-3xl font-bold mb-4">{pokemon()?.name}</div>
