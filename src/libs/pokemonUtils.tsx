@@ -39,6 +39,7 @@ export const getPokemonIconAndColor = (
 				icon: "/Fire.png",
 				color: "bg-red-600",
 				secondaryColor: "bg-red-100",
+				backgroundImage: "url(https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2fb2821a-1406-4a1d-9b04-6668f278e944/d88uddt-c81f902d-347c-49d4-b90f-71cb68865e65.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJmYjI4MjFhLTE0MDYtNGExZC05YjA0LTY2NjhmMjc4ZTk0NFwvZDg4dWRkdC1jODFmOTAyZC0zNDdjLTQ5ZDQtYjkwZi03MWNiNjg4NjVlNjUucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.H-KE37ljStuzydkHiTMi-sRIABR1ZGvw2ywFs9QMOOw)",
 			};
 		case "flying":
 			return {

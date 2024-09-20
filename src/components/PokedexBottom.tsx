@@ -1,6 +1,6 @@
 import { ChevronUp, GithubIcon } from "lucide-solid";
 
-export default function PokedexBottom() {
+export default function PokedexBottom(props: { class?: string }) {
 	const scrollToTop = () => {
 		const pokemonGrid = document.getElementById("pokemon-grid");
 		if (pokemonGrid) {
@@ -9,7 +9,7 @@ export default function PokedexBottom() {
 	};
 
 	return (
-		<div class="w-full max-w-7xl mx-auto bg-red-400 rounded-b-lg overflow-hidden">
+		<div class={`w-full bg-red-400 rounded-b-lg overflow-hidden ${props.class || ''}`}>
 			<div class="bg-red-400 p-4 flex justify-between items-center">
 				<div class="flex space-x-3">
 					<div class="w-5 h-5 bg-red-700 rounded-full" />

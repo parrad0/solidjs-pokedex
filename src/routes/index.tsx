@@ -1,3 +1,4 @@
+import Div100vh from "@/components/Div100";
 import Pokedex from "@/components/Pokedex";
 import { Meta } from "@solidjs/meta";
 import { Suspense } from "solid-js";
@@ -13,11 +14,13 @@ export default function Home() {
 			<Meta property="og:image:type" content="image/png" />
 			<Meta property="og:image:url" content="https://solidjs-pokedex.vercel.app/og.png" />
 			<Meta property="og:site_name" content="Pokedex" />
-			<main class="overflow-hidden">
-				<Suspense fallback={<div>Loading...</div>}>
-					<Pokedex />
-				</Suspense>
-			</main>
+			<Div100vh>
+				<main class="overflow-hidden h-screen">
+					<Suspense fallback={<div>Loading...</div>}>
+						<Pokedex />
+					</Suspense>
+				</main>
+			</Div100vh>
 		</div>
 	);
 }

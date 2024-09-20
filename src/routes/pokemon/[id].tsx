@@ -22,10 +22,12 @@ export default function Page() {
 	return (
 		<div class="w-full max-w-5xl mx-auto">
 			<Card
+				
 				class={`${getPokemonIconAndColor(pokemon()?.types[0]?.type.name || "normal").secondaryColor} overflow-hidden w-full`}
 			>
 				<CardHeader
-					class={`flex flex-col items-center pb-2 rounded-b-full rounded-t-xl pokemon-image-container ${pokemon()?.types[0]?.type.name === "normal" ? "bg-gray-300" : `${getPokemonIconAndColor(pokemon()?.types[0]?.type.name || "normal").color}`}`}
+				style={{"background-size":"cover","background-repeat":"no-repeat", "background-image": `${getPokemonIconAndColor(pokemon()?.types[0]?.type.name || "normal").backgroundImage}` }}
+					class={`flex flex-col items-center pb-2 rounded-b-full rounded-t-xl pokemon-image-container ${pokemon()?.types[0]?.type.name === "normal" ? "bg-gray-300" : getPokemonIconAndColor(pokemon()?.types[0]?.type.name || "normal").color}`}
 				>
 					{pokemon() && (
 						<div class={"relative w-[400px] h-[400px] overflow-hidden mb-4 flex items-center justify-center"}>
